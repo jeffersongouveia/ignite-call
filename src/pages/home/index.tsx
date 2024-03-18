@@ -2,21 +2,21 @@ import Image from 'next/image'
 import { Heading, Text } from '@ignite-ui/react'
 
 import { Container, Hero, Preview } from '@/pages/home/styles'
-import appPreview from '../../../public/app-preview.png'
-
 import ClaimUsernameForm from '@/pages/home/components/ClaimUsernameForm'
+
+import appPreview from '../../../public/app-preview.png'
 
 export default function Home() {
   return (
     <Container>
       <Hero>
         <Heading as="h1" size="4xl">
-          Agendamento descomplicado
+          Scheduling made easy
         </Heading>
 
         <Text size="lg">
-          Conecte seu calendário e permita que as pessoas marquem agendamentos
-          no seu tempo livre.
+          Connect your calendar and let people schedule appointments in their
+          free time.
         </Text>
 
         <ClaimUsernameForm />
@@ -28,7 +28,7 @@ export default function Home() {
           height={400}
           quality={100}
           priority
-          alt="Pre-visualização de calendário no app"
+          alt="In-app calendar preview"
         />
       </Preview>
     </Container>
