@@ -12,7 +12,7 @@ export const Form = styled(Box, {
   },
 })
 
-export const FormAnnotation = styled('div', {
+export const FormError = styled('div', {
   marginTop: '$2',
   minHeight: 22.4,
 
