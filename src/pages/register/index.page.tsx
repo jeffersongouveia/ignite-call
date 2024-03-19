@@ -5,7 +5,9 @@ import { Heading, Text, MultiStep, TextInput, Button } from '@ignite-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/router'
 import { z } from 'zod'
+import { AxiosError } from 'axios'
 
+import { api } from '@/lib/axios'
 import { Container, Header, Form, FormError } from '@/pages/register/styles'
 
 const registerFormSchema = z.object({
@@ -40,8 +42,14 @@ export default function Register() {
     }
   }, [router.query?.username, setValue])
 
-  function handleRegister(data: RegisterFormData) {
-    console.log(data)
+  async function handleRegister(data: RegisterFormData) {
+    try {
+      await api.post('/users', data)
+    } catch (err) {
+      if (err instanceof AxiosError && err?.response?.data?.message) {
+        alert(err.response.data.message)
+      }
+    }
   }
 
   return (
