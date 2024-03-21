@@ -45,6 +45,7 @@ export default function Register() {
   async function handleRegister(data: RegisterFormData) {
     try {
       await api.post('/users', data)
+      await router.push('/register/connect-calendar')
     } catch (err) {
       if (err instanceof AxiosError && err?.response?.data?.message) {
         alert(err.response.data.message)
