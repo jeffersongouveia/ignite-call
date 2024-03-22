@@ -10,7 +10,7 @@ import {
   AuthError,
 } from '@/pages/register/connect-calendar/styles'
 
-export default function Register() {
+export default function ConnectCalendar() {
   const session = useSession()
   const router = useRouter()
 
