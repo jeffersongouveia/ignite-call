@@ -10,6 +10,7 @@ import { CheckedState } from '@radix-ui/react-checkbox'
 import { ArrowRight } from 'phosphor-react'
 import { z } from 'zod'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import getWeekDays from '@/utils/get-week-days'
 import { Container, Header } from '@/pages/register/styles'
@@ -19,9 +20,27 @@ import {
   IntervalItem,
   IntervalDay,
   IntervalInputs,
+  FormError,
 } from '@/pages/register/time-intervals/styles'
 
-const timeIntervalsFormSchema = z.object({})
+const timeIntervalsFormSchema = z.object({
+  intervals: z
+    .array(
+      z.object({
+        weekDay: z.number().min(0).max(6),
+        startTime: z.string(),
+        endTime: z.string(),
+        enabled: z.boolean(),
+      }),
+    )
+    .length(7)
+    .transform((intervals) => intervals.filter((i) => i.enabled))
+    .refine((intervals) => intervals.length > 0, {
+      message: 'At least one week day must be selected',
+    }),
+})
+
+type TimeIntervalsFormData = z.infer<typeof timeIntervalsFormSchema>
 
 export default function TimeIntervals() {
   const {
@@ -31,6 +50,7 @@ export default function TimeIntervals() {
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm({
+    resolver: zodResolver(timeIntervalsFormSchema),
     defaultValues: {
       intervals: [
         { weekDay: 0, startTime: '08:00', endTime: '18:00', enabled: false },
@@ -53,7 +73,11 @@ export default function TimeIntervals() {
 
   const weekDays = getWeekDays()
 
-  async function handleSetTimeIntervals() {}
+  console.debug(errors)
+
+  async function handleSetTimeIntervals(data: TimeIntervalsFormData) {
+    console.debug(data)
+  }
 
   return (
     <Container>
@@ -108,7 +132,11 @@ export default function TimeIntervals() {
           ))}
         </IntervalsContainer>
 
-        <Button type="submit">
+        {errors.intervals && (
+          <FormError size="sm">{errors.intervals.root?.message}</FormError>
+        )}
+
+        <Button type="submit" disabled={isSubmitting}>
           Next step
           <ArrowRight />
         </Button>
