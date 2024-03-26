@@ -22,6 +22,7 @@ import {
   IntervalInputs,
   FormError,
 } from '@/pages/register/time-intervals/styles'
+import convertHourToMinutes from '@/utils/convert-hour-to-minutes'
 
 const timeIntervalsFormSchema = z.object({
   intervals: z
@@ -37,10 +38,24 @@ const timeIntervalsFormSchema = z.object({
     .transform((intervals) => intervals.filter((i) => i.enabled))
     .refine((intervals) => intervals.length > 0, {
       message: 'At least one week day must be selected',
-    }),
+    })
+    .transform((intervals) =>
+      intervals.map((i) => ({
+        weekDay: i.weekDay,
+        startTimeInMinutes: convertHourToMinutes(i.startTime),
+        endTimeInMinutes: convertHourToMinutes(i.endTime),
+      })),
+    )
+    .refine(
+      (intervals) =>
+        // At least 1 hour of difference
+        intervals.every((i) => i.endTimeInMinutes - 60 >= i.startTimeInMinutes),
+      { message: 'The interval must be at least 1 hour' },
+    ),
 })
 
-type TimeIntervalsFormData = z.infer<typeof timeIntervalsFormSchema>
+type TimeIntervalsFormInput = z.input<typeof timeIntervalsFormSchema>
+type TimeIntervalsFormOutput = z.output<typeof timeIntervalsFormSchema>
 
 export default function TimeIntervals() {
   const {
@@ -49,7 +64,7 @@ export default function TimeIntervals() {
     watch,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = useForm({
+  } = useForm<TimeIntervalsFormInput>({
     resolver: zodResolver(timeIntervalsFormSchema),
     defaultValues: {
       intervals: [
@@ -68,14 +83,10 @@ export default function TimeIntervals() {
     control,
     name: 'intervals',
   })
-
   const intervals = watch('intervals')
-
   const weekDays = getWeekDays()
 
-  console.debug(errors)
-
-  async function handleSetTimeIntervals(data: TimeIntervalsFormData) {
+  async function handleSetTimeIntervals(data: TimeIntervalsFormOutput) {
     console.debug(data)
   }
 
