@@ -1,6 +1,6 @@
 import { Adapter } from 'next-auth/adapters'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { parseCookies, destroyCookie } from 'nookies'
+import { NextApiRequest, NextApiResponse, NextPageContext } from 'next'
+import { destroyCookie, parseCookies } from 'nookies'
 
 import { prisma } from '../prisma'
 
@@ -14,8 +14,8 @@ interface User {
 }
 
 export default function PrismaAdapter(
-  req: NextApiRequest,
-  res: NextApiResponse,
+  req: NextApiRequest | NextPageContext['req'],
+  res: NextApiResponse | NextPageContext['res'],
 ): Adapter {
   function destructureUser(user: User) {
     return {
@@ -24,7 +24,7 @@ export default function PrismaAdapter(
       email: user.email!,
       username: user.username,
       avatar_url: user.avatar_url!,
-      created_at: user.created_at,
+      created_at: user.created_at.toISOString(),
 
       emailVerified: null,
     }

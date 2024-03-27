@@ -8,9 +8,10 @@ import {
 } from '@ignite-ui/react'
 import { CheckedState } from '@radix-ui/react-checkbox'
 import { ArrowRight } from 'phosphor-react'
-import { z } from 'zod'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/router'
+import { z } from 'zod'
 
 import { api } from '@/lib/axios'
 import convertHourToMinutes from '@/utils/convert-hour-to-minutes'
@@ -60,6 +61,8 @@ type TimeIntervalsFormInput = z.input<typeof timeIntervalsFormSchema>
 type TimeIntervalsFormOutput = z.output<typeof timeIntervalsFormSchema>
 
 export default function TimeIntervals() {
+  const router = useRouter()
+
   const {
     register,
     control,
@@ -90,6 +93,7 @@ export default function TimeIntervals() {
 
   async function handleSetTimeIntervals(data: TimeIntervalsFormOutput) {
     await api.post('/users/time-intervals', data)
+    await router.push('/update-profile')
   }
 
   return (
