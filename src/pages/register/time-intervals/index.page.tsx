@@ -12,7 +12,10 @@ import { z } from 'zod'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
+import { api } from '@/lib/axios'
+import convertHourToMinutes from '@/utils/convert-hour-to-minutes'
 import getWeekDays from '@/utils/get-week-days'
+
 import { Container, Header } from '@/pages/register/styles'
 import {
   IntervalBox,
@@ -22,7 +25,6 @@ import {
   IntervalInputs,
   FormError,
 } from '@/pages/register/time-intervals/styles'
-import convertHourToMinutes from '@/utils/convert-hour-to-minutes'
 
 const timeIntervalsFormSchema = z.object({
   intervals: z
@@ -87,7 +89,7 @@ export default function TimeIntervals() {
   const weekDays = getWeekDays()
 
   async function handleSetTimeIntervals(data: TimeIntervalsFormOutput) {
-    console.debug(data)
+    await api.post('/users/time-intervals', data)
   }
 
   return (

@@ -9,4 +9,8 @@ declare module 'next-auth' {
     avatar_url: string
     created_at?: Date
   }
+
+  interface Session {
+    user: User
+  }
 }
