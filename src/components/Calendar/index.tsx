@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useQuery } from '@tanstack/react-query'
 import { CaretLeft, CaretRight } from 'phosphor-react'
 import dayjs from 'dayjs'
 
+import { api } from '../../lib/axios'
 import getWeekDays from '../../utils/get-week-days'
 import { Actions, Body, Container, Day, Header, Title } from './styles'
 
@@ -18,7 +21,11 @@ interface CalendarWeek {
   }>
 }
 
-type CalendarWeeks = Array<CalendarWeek>
+interface BlockedDates {
+  blockedWeekDays: number[]
+}
+
+type CalendarWeeks = CalendarWeek[]
 
 export default function Calendar({
   selectedDate,
@@ -29,6 +36,25 @@ export default function Calendar({
   const weekDays = getWeekDays({ short: true })
   const currentMonth = currentDate.format('MMMM')
   const currentYear = currentDate.format('YYYY')
+
+  const router = useRouter()
+  const username = String(router.query.username)
+  const month = currentDate.get('month')
+  const year = currentDate.get('year')
+
+  const { data: blockedDates } = useQuery<BlockedDates>({
+    queryKey: ['blocked-dates', username, month, year],
+    queryFn: async () => {
+      const response = await api.get(`/users/${username}/blocked-dates`, {
+        params: {
+          month,
+          year,
+        },
+      })
+
+      return response.data
+    },
+  })
 
   const calendarWeeks = useMemo(() => {
     const currentMonthDays = Array.from({
@@ -57,7 +83,9 @@ export default function Calendar({
       ...previousMonthDays.map((date) => ({ date, disabled: true })),
       ...currentMonthDays.map((date) => ({
         date,
-        disabled: date.endOf('day').isBefore(new Date()),
+        disabled:
+          date.endOf('day').isBefore(new Date()) ||
+          blockedDates?.blockedWeekDays.includes(date.get('day')),
       })),
       ...nextMonthDays.map((date) => ({ date, disabled: true })),
     ]
@@ -79,7 +107,7 @@ export default function Calendar({
     )
 
     return calendarWeeks
-  }, [currentDate])
+  }, [currentDate, blockedDates])
 
   function handlePreviousMonth() {
     setCurrentDate((state) => state.subtract(1, 'month'))
