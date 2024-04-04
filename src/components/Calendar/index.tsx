@@ -5,6 +5,11 @@ import dayjs from 'dayjs'
 import getWeekDays from '../../utils/get-week-days'
 import { Actions, Body, Container, Day, Header, Title } from './styles'
 
+interface CalendarProps {
+  selectedDate: Date | null
+  onSelectDate: (date: Date) => void
+}
+
 interface CalendarWeek {
   week: number
   days: Array<{
@@ -15,7 +20,10 @@ interface CalendarWeek {
 
 type CalendarWeeks = Array<CalendarWeek>
 
-export default function Calendar() {
+export default function Calendar({
+  selectedDate,
+  onSelectDate,
+}: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(() => dayjs().set('date', 1))
 
   const weekDays = getWeekDays({ short: true })
@@ -47,7 +55,10 @@ export default function Calendar() {
 
     const calendarDays = [
       ...previousMonthDays.map((date) => ({ date, disabled: true })),
-      ...currentMonthDays.map((date) => ({ date, disabled: false })),
+      ...currentMonthDays.map((date) => ({
+        date,
+        disabled: date.endOf('day').isBefore(new Date()),
+      })),
       ...nextMonthDays.map((date) => ({ date, disabled: true })),
     ]
 
@@ -109,7 +120,12 @@ export default function Calendar() {
             <tr key={week}>
               {days.map(({ date, disabled }) => (
                 <td key={date.toString()}>
-                  <Day disabled={disabled}>{date.get('date')}</Day>
+                  <Day
+                    disabled={disabled}
+                    onClick={() => onSelectDate(date.toDate())}
+                  >
+                    {date.get('date')}
+                  </Day>
                 </td>
               ))}
             </tr>
