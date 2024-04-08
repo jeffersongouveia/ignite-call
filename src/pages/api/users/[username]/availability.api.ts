@@ -62,6 +62,10 @@ export default async function handler(
     length: endHour - startHour,
   }).map((_, i) => startHour + i)
 
+  const dateFormat = 'YYYY-MM-DD[T]HH:mm:ss[.000Z]'
+  const referenceStart = referenceDate.set('hour', startHour).format(dateFormat)
+  const referenceEnd = referenceDate.set('hour', endHour).format(dateFormat)
+
   const blockedHours = await prisma.scheduling.findMany({
     select: {
       date: true,
@@ -69,15 +73,19 @@ export default async function handler(
     where: {
       user_id: user.id,
       date: {
-        gte: referenceDate.set('hour', startHour).toDate(),
-        lte: referenceDate.set('hour', endHour).toDate(),
+        gte: referenceStart,
+        lte: referenceEnd,
       },
     },
   })
 
-  const availableHours = selectedHours.filter(
-    (hour) => !blockedHours.some((blocked) => blocked.date.getHours() === hour),
-  )
+  const availableHours = selectedHours.filter((hour) => {
+    const isTimeBlocked = blockedHours.some(
+      (i) => i.date.getUTCHours() === hour,
+    )
+    const isTimeInPast = referenceDate.set('hour', hour).isBefore(new Date())
+    return !isTimeBlocked && !isTimeInPast
+  })
 
   return res.json({
     selectedHours,
