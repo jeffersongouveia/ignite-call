@@ -23,6 +23,7 @@ interface CalendarWeek {
 
 interface BlockedDates {
   blockedWeekDays: number[]
+  blockedDates: number[]
 }
 
 type CalendarWeeks = CalendarWeek[]
@@ -39,7 +40,7 @@ export default function Calendar({
 
   const router = useRouter()
   const username = String(router.query.username)
-  const month = currentDate.get('month')
+  const month = currentDate.get('month') + 1 // Is 0-indexed
   const year = currentDate.get('year')
 
   const { data: blockedDates } = useQuery<BlockedDates>({
@@ -57,6 +58,10 @@ export default function Calendar({
   })
 
   const calendarWeeks = useMemo(() => {
+    if (!blockedDates) {
+      return []
+    }
+
     const currentMonthDays = Array.from({
       length: currentDate.daysInMonth(),
     }).map((_, i) => currentDate.set('date', i + 1))
@@ -85,7 +90,8 @@ export default function Calendar({
         date,
         disabled:
           date.endOf('day').isBefore(new Date()) ||
-          blockedDates?.blockedWeekDays.includes(date.get('day')),
+          blockedDates.blockedWeekDays.includes(date.get('day')) ||
+          blockedDates.blockedDates.includes(date.get('date')),
       })),
       ...nextMonthDays.map((date) => ({ date, disabled: true })),
     ]

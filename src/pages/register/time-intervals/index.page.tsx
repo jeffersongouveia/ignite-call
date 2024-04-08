@@ -93,7 +93,7 @@ export default function TimeIntervals() {
 
   async function handleSetTimeIntervals(data: TimeIntervalsFormOutput) {
     await api.post('/users/time-intervals', data)
-    await router.push('/update-profile')
+    await router.push('/register/update-profile')
   }
 
   return (
