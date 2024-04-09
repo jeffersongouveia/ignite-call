@@ -5,7 +5,7 @@ export const Form = styled(Box, {
   flexDirection: 'column',
   gap: '$4',
   maxWidth: 540,
-  margin: '$6 0 auto',
+  margin: '$6 auto 0',
 
   label: {
     display: 'flex',
