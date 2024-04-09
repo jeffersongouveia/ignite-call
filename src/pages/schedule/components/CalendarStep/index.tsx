@@ -8,24 +8,28 @@ import Calendar from '../../../../components/Calendar'
 
 import { Container, Header, Item, List, TimePicker } from './styles'
 
+interface CalendarStepProps {
+  onSelectDate: (date: Date) => void
+}
+
 interface Availability {
   selectedHours: number[]
   availableHours: number[]
 }
 
-export default function CalendarStep() {
+export default function CalendarStep({ onSelectDate }: CalendarStepProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   const router = useRouter()
 
   const username = String(router.query.username)
-  const isDateSelected = !!selectedDate
-  const weekDay = isDateSelected ? dayjs(selectedDate).format('dddd') : ''
-  const monthAndDate = isDateSelected
+  const showTimePicker = !!selectedDate
+  const weekDay = showTimePicker ? dayjs(selectedDate).format('dddd') : ''
+  const monthAndDate = showTimePicker
     ? dayjs(selectedDate).format('MMMM D')
     : ''
 
-  const selectedDateWithoutTime = isDateSelected
+  const selectedDateWithoutTime = showTimePicker
     ? dayjs(selectedDate).format('YYYY-MM-DD')
     : ''
 
@@ -40,14 +44,23 @@ export default function CalendarStep() {
 
       return response.data
     },
-    enabled: isDateSelected,
+    enabled: showTimePicker,
   })
 
+  function handleSelectTime(hour: number) {
+    const dateAndTime = dayjs(selectedDate)
+      .set('hour', hour)
+      .startOf('hour')
+      .toDate()
+
+    onSelectDate(dateAndTime)
+  }
+
   return (
-    <Container isTimePickerOpen={isDateSelected}>
+    <Container isTimePickerOpen={showTimePicker}>
       <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
 
-      {isDateSelected && (
+      {showTimePicker && (
         <TimePicker>
           <Header>
             {weekDay}
@@ -59,6 +72,7 @@ export default function CalendarStep() {
               <Item
                 key={hour}
                 disabled={!availability?.availableHours.includes(hour)}
+                onClick={() => handleSelectTime(hour)}
               >
                 {String(hour).padStart(2, '0')}:00
               </Item>
