@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 import { prisma } from '../../../../lib/prisma'
+
+dayjs.extend(utc)
 
 type QueryProps = {
   username: string
@@ -62,9 +65,8 @@ export default async function handler(
     length: endHour - startHour,
   }).map((_, i) => startHour + i)
 
-  const dateFormat = 'YYYY-MM-DD[T]HH:mm:ss[.000Z]'
-  const referenceStart = referenceDate.set('hour', startHour).format(dateFormat)
-  const referenceEnd = referenceDate.set('hour', endHour).format(dateFormat)
+  const referenceStart = referenceDate.set('hour', startHour).utc().toDate()
+  const referenceEnd = referenceDate.set('hour', endHour).utc().toDate()
 
   const blockedHours = await prisma.scheduling.findMany({
     select: {
@@ -80,10 +82,9 @@ export default async function handler(
   })
 
   const availableHours = selectedHours.filter((hour) => {
-    const isTimeBlocked = blockedHours.some(
-      (i) => i.date.getUTCHours() === hour,
-    )
+    const isTimeBlocked = blockedHours.some((i) => i.date.getHours() === hour)
     const isTimeInPast = referenceDate.set('hour', hour).isBefore(new Date())
+
     return !isTimeBlocked && !isTimeInPast
   })
 
