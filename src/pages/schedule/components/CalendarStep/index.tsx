@@ -23,13 +23,13 @@ export default function CalendarStep({ onSelectDate }: CalendarStepProps) {
   const router = useRouter()
 
   const username = String(router.query.username)
-  const showTimePicker = !!selectedDate
-  const weekDay = showTimePicker ? dayjs(selectedDate).format('dddd') : ''
-  const monthAndDate = showTimePicker
+  const isDateSelected = !!selectedDate
+  const weekDay = isDateSelected ? dayjs(selectedDate).format('dddd') : ''
+  const monthAndDate = isDateSelected
     ? dayjs(selectedDate).format('MMMM D')
     : ''
 
-  const selectedDateWithoutTime = showTimePicker
+  const selectedDateWithoutTime = isDateSelected
     ? dayjs(selectedDate).format('YYYY-MM-DD')
     : ''
 
@@ -44,7 +44,7 @@ export default function CalendarStep({ onSelectDate }: CalendarStepProps) {
 
       return response.data
     },
-    enabled: showTimePicker,
+    enabled: isDateSelected,
   })
 
   function handleSelectTime(hour: number) {
@@ -57,10 +57,10 @@ export default function CalendarStep({ onSelectDate }: CalendarStepProps) {
   }
 
   return (
-    <Container isTimePickerOpen={showTimePicker}>
+    <Container isTimePickerOpen={isDateSelected}>
       <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
 
-      {showTimePicker && (
+      {isDateSelected && (
         <TimePicker>
           <Header>
             {weekDay}
