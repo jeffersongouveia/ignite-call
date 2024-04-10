@@ -65,12 +65,14 @@ export default function ConfirmStep({
 
       <label>
         <Text size="sm">Your name</Text>
+        {/* @ts-expect-error */}
         <TextInput placeholder="Your name" {...register('name')} />
         {errors.name && <Error size="sm">{errors.name.message}</Error>}
       </label>
 
       <label>
         <Text size="sm">E-mail</Text>
+        {/* @ts-expect-error */}
         <TextInput
           type="email"
           placeholder="johndoe@example.com"

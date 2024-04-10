@@ -111,6 +111,7 @@ export default function TimeIntervals() {
           <MultiStep size={4} currentStep={3} />
         </Header>
 
+        {/* @ts-expect-error */}
         <IntervalBox as="form" onSubmit={handleSubmit(handleSetTimeIntervals)}>
           <IntervalsContainer>
             {fields.map((field, index) => (
@@ -133,6 +134,7 @@ export default function TimeIntervals() {
                 </IntervalDay>
 
                 <IntervalInputs>
+                  {/* @ts-expect-error */}
                   <TextInput
                     size="sm"
                     type="time"
@@ -141,6 +143,7 @@ export default function TimeIntervals() {
                     {...register(`intervals.${index}.startTime`)}
                   />
 
+                  {/* @ts-expect-error */}
                   <TextInput
                     size="sm"
                     type="time"

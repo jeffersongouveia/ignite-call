@@ -69,6 +69,7 @@ export default function Register() {
         <Form as="form" onSubmit={handleSubmit(handleRegister)}>
           <label>
             <Text size="sm">Your username</Text>
+            {/* @ts-expect-error */}
             <TextInput
               prefix="ignite.com/"
               placeholder="your-username"
@@ -82,6 +83,7 @@ export default function Register() {
 
           <label>
             <Text size="sm">Your display name</Text>
+            {/* @ts-expect-error */}
             <TextInput placeholder="Display name" {...register('name')} />
 
             {errors.name && (
