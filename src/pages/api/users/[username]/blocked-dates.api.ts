@@ -46,8 +46,6 @@ export default async function handler(
       !availableWeekDays.some((available) => available.week_day === weekDay),
   )
 
-  const date = `${year}-${month.padStart(2, '0')}`
-
   const blockedDatesRaw: Array<{ date: number }> = await prisma.$queryRaw`
     select
       extract(day from s.date) as date,

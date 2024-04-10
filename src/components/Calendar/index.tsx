@@ -9,7 +9,7 @@ import getWeekDays from '../../utils/get-week-days'
 import { Actions, Body, Container, Day, Header, Title } from './styles'
 
 interface CalendarProps {
-  selectedDate: Date | null
+  selectedDate?: Date | null
   onSelectDate: (date: Date) => void
 }
 
@@ -28,10 +28,7 @@ interface BlockedDates {
 
 type CalendarWeeks = CalendarWeek[]
 
-export default function Calendar({
-  selectedDate,
-  onSelectDate,
-}: CalendarProps) {
+export default function Calendar({ onSelectDate }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(() => dayjs().set('date', 1))
 
   const weekDays = getWeekDays({ short: true })
