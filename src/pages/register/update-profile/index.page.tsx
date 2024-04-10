@@ -13,6 +13,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
+import { NextSeo } from 'next-seo'
 import { z } from 'zod'
 
 import { buildNextAuthOptions } from '../../api/auth/[...nextauth].api'
@@ -45,37 +46,41 @@ export default function UpdateProfile() {
   }
 
   return (
-    <Container>
-      <Header>
-        <Heading as="strong">Welcome to Ignite Call</Heading>
-        <Text>Let&apos;s create your profile, it&apos;s quick!</Text>
+    <>
+      <NextSeo title="Update your profile" noindex />
 
-        <MultiStep size={4} currentStep={4} />
-      </Header>
+      <Container>
+        <Header>
+          <Heading as="strong">Welcome to Ignite Call</Heading>
+          <Text>Let&apos;s create your profile, it&apos;s quick!</Text>
 
-      <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
-        <label>
-          <Text size="sm">Profile picture</Text>
-          <Avatar
-            src={session.data?.user.avatar_url}
-            alt={session.data?.user.name}
-          />
-        </label>
+          <MultiStep size={4} currentStep={4} />
+        </Header>
 
-        <label>
-          <Text size="sm">About you</Text>
-          <TextArea placeholder="Display name" {...register('bio')} />
-          <FormAnnotation size="sm">
-            This will be displayed on your profile page
-          </FormAnnotation>
-        </label>
+        <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
+          <label>
+            <Text size="sm">Profile picture</Text>
+            <Avatar
+              src={session.data?.user.avatar_url}
+              alt={session.data?.user.name}
+            />
+          </label>
 
-        <Button type="submit" disabled={isSubmitting}>
-          Finish
-          <ArrowRight />
-        </Button>
-      </ProfileBox>
-    </Container>
+          <label>
+            <Text size="sm">About you</Text>
+            <TextArea placeholder="Display name" {...register('bio')} />
+            <FormAnnotation size="sm">
+              This will be displayed on your profile page
+            </FormAnnotation>
+          </label>
+
+          <Button type="submit" disabled={isSubmitting}>
+            Finish
+            <ArrowRight />
+          </Button>
+        </ProfileBox>
+      </Container>
+    </>
   )
 }
 
