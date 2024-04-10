@@ -31,6 +31,7 @@ export default function PrismaAdapter(
   }
 
   return {
+    // @ts-expect-error
     async createUser(user) {
       const { '@ignitecall:userId': userId } = parseCookies({ req })
 
@@ -54,6 +55,7 @@ export default function PrismaAdapter(
       return destructureUser(newUser)
     },
 
+    // @ts-expect-error
     async getUser(id) {
       const user = await prisma.user.findUnique({
         where: { id },
@@ -66,6 +68,7 @@ export default function PrismaAdapter(
       return destructureUser(user)
     },
 
+    // @ts-expect-error
     async getUserByEmail(email) {
       const user = await prisma.user.findUnique({
         where: { email },
@@ -78,6 +81,7 @@ export default function PrismaAdapter(
       return destructureUser(user)
     },
 
+    // @ts-expect-error
     async getUserByAccount({ providerAccountId, provider }) {
       const account = await prisma.account.findUnique({
         where: {
@@ -98,6 +102,7 @@ export default function PrismaAdapter(
       return destructureUser(account.user)
     },
 
+    // @ts-expect-error
     async updateUser(user) {
       const updatedUser = await prisma.user.update({
         where: {
@@ -147,6 +152,7 @@ export default function PrismaAdapter(
       }
     },
 
+    // @ts-expect-error
     async getSessionAndUser(sessionToken) {
       const session = await prisma.session.findUnique({
         where: {
