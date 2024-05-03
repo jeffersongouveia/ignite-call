@@ -4,7 +4,7 @@ export const Container = styled('div', {
   display: 'flex',
   alignItems: 'center',
   gap: '$20',
-  height: '100vh',
+  height: 'calc(100vh - 80px)',
   maxWidth: 'calc(100vw - (100vw - 1160px) / 2)',
   marginLeft: 'auto',
 })

@@ -3,6 +3,7 @@ import { Heading, Text } from '@ignite-ui/react'
 import { NextSeo } from 'next-seo'
 
 import ClaimUsernameForm from '@/pages/home/components/ClaimUsernameForm'
+import Footer from '@/components/Footer'
 
 import appPreview from '../../../public/app-preview.png'
 import { Container, Hero, Preview } from '@/pages/home/styles'
@@ -39,6 +40,8 @@ export default function Home() {
           />
         </Preview>
       </Container>
+
+      <Footer />
     </>
   )
 }
